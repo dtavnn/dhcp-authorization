@@ -1,0 +1,26 @@
+{
+    "ok": true,
+    "result": [
+        {
+            "update_id": 936846021,
+            "message": {
+                "message_id": 3,
+                "from": {
+                    "id": 240072653,
+                    "is_bot": false,
+                    "first_name": "Rizqi Aldi",
+                    "username": "xdnroot",
+                    "language_code": "en"
+                },
+                "chat": {
+                    "id": 240072653,
+                    "first_name": "Rizqi Aldi",
+                    "username": "xdnroot",
+                    "type": "private"
+                },
+                "date": 1613962528,
+                "text": "oi"
+            }
+        }
+    ]
+}
