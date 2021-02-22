@@ -149,7 +149,7 @@ def static_arp():
 def webhook():
     if request.is_json:
         input = request.get_json()
-        print(input)
+        print(json.dumps(input, indent=4))
         return jsonify(input)
 
     else:
