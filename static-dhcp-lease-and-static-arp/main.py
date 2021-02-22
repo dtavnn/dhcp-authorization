@@ -148,7 +148,7 @@ def static_arp():
 @app.route('/webhook', methods = ['POST'])
 def webhook():
     if request.is_json:
-        input = request.json.get()
+        input = request.get_json()
         print(input)
         return jsonify(input)
 
