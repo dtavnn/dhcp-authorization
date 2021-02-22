@@ -142,14 +142,88 @@ def static_arp():
 
     # close the connection
 
+def sendMessage(message):
+    url = "https://api.telegram.org/bot" + api_bot + "/sendMessage"
+    headers = {
+        'Content-Type': 'application/json'
+        }
+    payload = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "MarkdownV2",
+        "disable_web_page_preview": True
+    }
+    requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
 
+def deleteMessage(message_id):
+    url = "https://api.telegram.org/bot" + api_bot + "/deleteMessage"
+    headers = {
+        'Content-Type': 'application/json'
+        }
+    payload = {
+        "chat_id": chat_id,
+        "message_id": message_id,
+    }
+    requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
 
 ## begin /webhook
 @app.route('/webhook', methods = ['POST'])
 def webhook():
+    interface = "wifi"
+
     if request.is_json:
         input = request.get_json()
         print(json.dumps(input, indent=4))
+        message_id = input['callback_query']['message']['message_id']
+        message_data = input['callback_query']['message']['data']
+        input = json.load(message_data)
+
+        netmiko = netmiko_conn(router, username, password)
+        rosapi = rosapi_conn(router, username, password)
+        api = rosapi.get_api()
+
+        # get dhcp lease based on mac-address
+        leases = api.get_resource('ip/dhcp-server/lease')
+        dhcp = leases.get(mac_address=input['mac'])
+
+        if dhcp:
+            result = {}
+            x = 0
+            for item in dhcp:
+                # get the id only
+                host = item['host-name']
+                ip = item['address']
+                mac = item['mac-address']
+
+                if input['action'] == 'allow':
+                    comment = "allow " + host
+                    netmiko.send_config_set([
+                        '/ip dhcp-server lease make-static [find mac-address=' + mac + ']',
+                        '/ip dhcp-server lease set [find mac-address=' + mac + '] comment=' + comment,
+                        '/ip arp add address=' + ip + ' mac-address=' + mac + ' interface=' + interface
+                    ])
+                    sendMessage("✅ Device Allowed ✅\nHostname: *" + host +
+        "*\nIP: *" + ip + "*\nMAC Address: *" + mac + "*")
+                    deleteMessage(message_id)
+                else:
+                    comment = "deny " + host
+                    netmiko.send_config_set([
+                        '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac + ' comment=' + comment,
+                        '/ip dhcp-server lease remove [find mac-address=' + mac + ']',
+                    ])
+                    sendMessage("❌ Device Denied ❌\nHostname: *" + host +
+        "*\nIP: *" + ip + "*\nMAC Address: *" + mac + "*")
+                    deleteMessage(message_id)
+
+                result[mac] =  {
+                    "comment": comment,
+                    "ip": ip
+                }
+
+            logging(result)
+            logout(netmiko, rosapi)
+            return jsonify(result)
+
         return jsonify(input)
 
     else:
@@ -184,11 +258,11 @@ def push_notif():
                     [
                         {
                             "text": "ALLOW",
-                            "callback_data": "{'action':'allow','mac': '"+mac+"'}"
+                            "callback_data": "{'action':'allow','mac':'"+mac+"'}"
                         },
                         {
                             "text": "DENY",
-                            "callback_data": "{'action':'deny','mac': '"+mac+"'}"
+                            "callback_data": "{'action':'deny','mac':'"+mac+"'}"
                         }
                     ]
                 ]
