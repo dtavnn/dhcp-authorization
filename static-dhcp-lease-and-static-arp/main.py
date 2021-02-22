@@ -258,11 +258,11 @@ def push_notif():
                     [
                         {
                             "text": "ALLOW",
-                            "callback_data": "{'action':'allow','mac':'"+mac+"'}"
+                            "callback_data": "{\"action\":\"allow\",\"mac\":\""+mac+"\"}"
                         },
                         {
                             "text": "DENY",
-                            "callback_data": "{'action':'deny','mac':'"+mac+"'}"
+                            "callback_data": "{\"action\":\"deny\",\"mac\":\""+mac+"\"}"
                         }
                     ]
                 ]
