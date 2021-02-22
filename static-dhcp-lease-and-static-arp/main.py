@@ -15,11 +15,11 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
 ## telegram bot and router credential
-api_bot = "1555668877:AAFZfmB6UH-e-FLnJS31GRAAaocYNc8gtaA"
-chat_id = 290072690
-router = "172.16.8.181"
-username = "admin"
-password = "123"
+api_bot = os.environ.get('API_BOT')
+chat_id = os.environ.get('CHAT_ID')
+router = os.environ.get('ROUTER')
+username = os.environ.get('ROUTER_USER')
+password = os.environ.get('ROUTER_PASSWORD')
 
 
 ## exception
@@ -161,7 +161,7 @@ def webhook():
 @app.route('/push_notif', methods = ['POST'])
 def push_notif():
     url = "https://api.telegram.org/bot" + api_bot + "/sendMessage"
-
+    print(url)
     if request.form:
         data = request.form.copy()
         print(data)
