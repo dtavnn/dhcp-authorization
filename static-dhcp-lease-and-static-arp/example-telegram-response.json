@@ -21,6 +21,64 @@
                 "date": 1613962528,
                 "text": "oi"
             }
+        },
+        {
+            "update_id": 936846022,
+            "callback_query": {
+                "id": "1031104195236770385",
+                "from": {
+                    "id": 240072653,
+                    "is_bot": false,
+                    "first_name": "Rizqi Aldi",
+                    "username": "xdnroot",
+                    "language_code": "en"
+                },
+                "message": {
+                    "message_id": 9,
+                    "from": {
+                        "id": 1555959235,
+                        "is_bot": true,
+                        "first_name": "undefined",
+                        "username": "kucinggendut_bot"
+                    },
+                    "chat": {
+                        "id": 240072653,
+                        "first_name": "Rizqi Aldi",
+                        "username": "xdnroot",
+                        "type": "private"
+                    },
+                    "date": 1613966523,
+                    "text": "==== New Device Connected ====\nHostname: realme3pro\nMAC Address: 54:42:32:32:20:ff\nConnected At: 22/02/2021 09:12:11\n\nDo you want to allow or deny this device?",
+                    "entities": [
+                        {
+                            "offset": 41,
+                            "length": 10,
+                            "type": "bold"
+                        },
+                        {
+                            "offset": 65,
+                            "length": 17,
+                            "type": "bold"
+                        }
+                    ],
+                    "reply_markup": {
+                        "inline_keyboard": [
+                            [
+                                {
+                                    "text": "ALLOW",
+                                    "callback_data": "{'action':'allow', 'mac': '54:42:32:32:20:ff'}"
+                                },
+                                {
+                                    "text": "DENY",
+                                    "url": "https://google.com/"
+                                }
+                            ]
+                        ]
+                    }
+                },
+                "chat_instance": "5724370080580258267",
+                "data": "{'action':'allow', 'mac': '54:42:32:32:20:ff'}"
+            }
         }
     ]
 }

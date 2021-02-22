@@ -1,8 +1,5 @@
 routeros_api
 netmiko
 flask
-sys
-os
-datetime
 requests
 linecache

@@ -7,25 +7,33 @@ Make sure you already in the _static-dhcp-lease-and-static-arp_ directory.
 
 We will use [RouterOS-api](https://pypi.org/project/RouterOS-api/) python library.
 
-1. Create a project folder and a venv folder within.
+1. Install PIP for python3 via [PIP docummentation](https://pip.pypa.io/en/stable/installing/) or use following command.
+```
+$ sudo apt-get install python3-pip
+```
+
+2. Install python3 virtualenv.
+```
+$ sudo apt-get install python3-venv
+```
+
+3. Create virtual environmen use "venv" folder within.
 ```
 $ python3 -m venv venv
 ```
 
-2. [Install PIP for Python3](https://pip.pypa.io/en/stable/installing/)
-
-
-3. Before you work on your project, activate the corresponding environment:
+4. Before you work on your project, activate the corresponding environment:
 ```
 $ . venv/bin/activate
 ```
 
-4. Install the required modules.
+5. Install the required modules.
 ```
+$ cd static-dhcp-lease-and-static-arp/
 $ pip3 install -r requirements.txt
 ```
 
-5. Add required environment variables.
+6. Add required environment variables.
 ```
 export API_BOT="1555959235:AAFZfmB6UH-e-FLnJS31GRAAaocYNc8hrqU"
 export CHAT_ID=290072690
@@ -34,13 +42,6 @@ export ROUTER_USER="admin"
 export ROUTER_PASSWORD="123"
 export LOG_FILE="/home/xdnroot/Documents/repository/mikrotik-scripting/static-dhcp-lease-and-static-arp/log.json"
 ```
-
-```
-nmcli connection add connection.id to-chr con-name to-chr type VPN vpn-type l2tp ifname -- connection.autoconnect no ipv4.method auto vpn.data "gateway = 54.255.107.223, ipsec-enabled = no, mru = 1400, mtu = 1400, password-flags = 0, refuse-chap = yes, refuse-mschap = yes, refuse-pap = yes, require-mppe = yes, user = dynamic" vpn.secrets password=idnmantab
-
-```
-
-
 
 ## B. How to Run
 
