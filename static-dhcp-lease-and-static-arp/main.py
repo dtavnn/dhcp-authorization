@@ -89,8 +89,8 @@ def logging(data):
         object = json.load(file) 
         for key in data:
             object[key['mac']] = {
-                "comment": key['comment'],
-                "ip_address": key['ip'],
+                "comment": key['mac']['comment'],
+                "ip_address": key['mac']['ip'],
                 "registered": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
@@ -208,7 +208,7 @@ def webhook():
                 else:
                     comment = "deny " + host
                     netmiko.send_config_set([
-                        '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac + ' comment=' + comment,
+                        '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac,
                         '/ip dhcp-server lease remove [find mac-address=' + mac + ']',
                     ])
                     sendMessage("❌ Device Denied ❌\nHostname: *" + host +
