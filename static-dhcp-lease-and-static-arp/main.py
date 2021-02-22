@@ -176,7 +176,7 @@ def webhook():
         print(json.dumps(input, indent=4))
         message_id = input['callback_query']['message']['message_id']
         message_data = input['callback_query']['data']
-        input = json.load(message_data)
+        input = json.loads(message_data)
 
         netmiko = netmiko_conn(router, username, password)
         rosapi = rosapi_conn(router, username, password)
