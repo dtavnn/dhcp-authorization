@@ -10,7 +10,7 @@ import requests
 import routeros_api
 import linecache
 
-## ap config
+## App config
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
@@ -51,11 +51,13 @@ def rosapi_conn(host, username, password):
     )
     return connection
 
-##logout from netmiko and routeros api connection
+## logout from netmiko and routeros api connection
 def logout(netmiko, rosapi):
     netmiko.disconnect()
     rosapi.disconnect()
+    return True
 
+## encode telegram message
 def msgencode(text):
     text = text.replace('_', '\\_')
     text = text.replace('*', '\\*')
@@ -92,6 +94,7 @@ def logging(data):
         file.seek(0)
         json.dump(object, file, indent = 4)
         file.truncate()
+        return True
 
 ## send message to telegram
 def sendMessage(message, keyboard=None):
@@ -121,8 +124,7 @@ def sendMessage(message, keyboard=None):
             "disable_web_page_preview": True
         }
 
-    response = requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
-    print(response)
+    return requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
 
 ## delete message by message_id
 def deleteMessage(message_id):
@@ -134,8 +136,7 @@ def deleteMessage(message_id):
         "chat_id": chat_id,
         "message_id": message_id,
     }
-    response = requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
-    print(response)
+    return requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
 
 
 ## authorize new connected device
@@ -186,13 +187,11 @@ def authorization(message_id, message_data):
                 "ip": ip
             }
 
-        print(result)
         logging(result)
         logout(netmiko, rosapi)
-        return jsonify(result)
+        return result
     else:
-        print("Feedback: Related DHCP lease not found.")
-        return jsonify({"status":False,"data":"Related DHCP lease not found."})
+        return {"status":False,"data":"Related DHCP lease not found."}
 
 
 
@@ -204,8 +203,9 @@ def webhook():
         print(json.dumps(input, indent=4))
         message_id = input['callback_query']['message']['message_id']
         message_data = input['callback_query']['data']
-        authorization(message_id, message_data)
-        
+        response = authorization(message_id, message_data)
+        print(response)
+        return jsonify(response)
     else:
         print("Feedback: Wrong JSON format.")
         return jsonify({"status":False,"data":"Wrong JSON format."})
@@ -237,12 +237,11 @@ def push_notif():
                 ]
             ]
         }
-
-        sendMessage(message, keyboard)
-        #response = sendMessage(message, keyboard)
+        
+        response = sendMessage(message, keyboard)
         print("=========== Feedback: Notification sent ===========")
-        #print(response)
-        return "Feedback: Notification sent"
+        print(response)
+        return jsonify({"status":True,"data":"Notification sent."})
     else:
         print("Feedback: Empty Data Received")
         return jsonify({"status":False,"data":None})
