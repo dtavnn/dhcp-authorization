@@ -203,7 +203,7 @@ def showWhitelist():
             for item in dhcp:
                 message += "• " + msgencode(item['host-name']) + "\n"
                 message += "MAC: " + item['mac-address'] + "\n"
-                message += "IP: " + msgencode(item['ip']) + "\n\n"
+                message += "IP: " + msgencode(item['address']) + "\n\n"
 
         else:
             message += "Empty Data"
