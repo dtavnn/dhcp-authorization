@@ -262,8 +262,14 @@ def webhook():
     if request.is_json:
         input = request.get_json()
         print(json.dumps(input, indent=4))
+        
+        try:
+            input['callback_query']
+            callback = True
+        except:
+            callback = None
 
-        if input['callback_query']:
+        if callback:
             message_id = input['callback_query']['message']['message_id']
             if input['callback_query']['data']:
                 message_data = input['callback_query']['data']
