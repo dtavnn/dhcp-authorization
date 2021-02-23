@@ -249,7 +249,7 @@ def setIP(message_data):
             print(getException())
 
         if success:
-            sendMessage("ℹ️ IP Changed ℹ️\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
+            sendMessage("✅ IP Changed ✅\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
                     "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + msgencode(input[2]) + "*"
                 )
         else:
