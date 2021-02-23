@@ -208,6 +208,7 @@ def showWhitelist():
         else:
             message += "Empty Data"
 
+        sendMessage(message)
         logout(netmiko, rosapi)
         return {"status":True, "data": message}
             
