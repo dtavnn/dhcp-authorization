@@ -187,7 +187,7 @@ def webhook():
 
         # get dhcp lease based on mac-address
         leases = api.get_resource('ip/dhcp-server/lease')
-        dhcp = leases.get(mac_address=input['mac'])
+        dhcp = leases.get(mac_address=input['mac'], dynamic="yes")
 
         if dhcp:
             result = {}
