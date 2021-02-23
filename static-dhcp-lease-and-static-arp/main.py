@@ -159,7 +159,7 @@ def authorization(message_id, message_data):
                 comment = "allow " + host
                 netmiko.send_config_set([
                     '/ip dhcp-server lease make-static [find mac-address=' + mac + ']',
-                    '/ip dhcp-server lease set [find mac-address=' + mac + '] comment=' + comment,
+                    '/ip dhcp-server lease set [find mac-address=' + mac + '] comment="' + comment + '"',
                     '/ip arp add address=' + ip + ' mac-address=' + mac + ' interface=' + interface
                 ])
                 sendMessage("✅ Device Allowed ✅\nHostname: *" + msgencode(host) +
