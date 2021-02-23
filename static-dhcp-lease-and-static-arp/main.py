@@ -299,7 +299,7 @@ def webhook():
                 message_data = input['message']['text']
 
                 if "/help" in message_data:
-                    response = sendMessage("ℹ️ Available Commands ℹ️\n*/help* : Show available commands\\.\n*/show _\\<mac\\>_* : Show IP based on Mac address\\.\n*/whitelist* : Show allowed devices\\.\n*/blocklist* : Show blocked devices\\.\n*/static _\\<mac\\> \\<ip\\>_* :  Change the leased IP address\\.\n*/allow _\\<mac\\>_* : Allow blocked device\\.\n*/deny _\\<mac\\>_* : Deny allowed device\\.\n\nNote:\n*_\\<something\\>_* is required varibale\\.")
+                    response = sendMessage("ℹ️ Available Commands ℹ️\n*/help* : Show available commands\\.\n*/whitelist* : Show allowed devices\\.\n*/blocklist* : Show blocked devices\\.\n*/show _\\<mac\\>_* : Show IP based on Mac address\\.\n*/static _\\<mac\\> \\<ip\\>_* :  Change the leased IP address\\.\n*/allow _\\<mac\\>_* : Allow blocked device\\.\n*/deny _\\<mac\\>_* : Deny allowed device\\.\n\nNote:\n*_\\<something\\>_* is required varibale\\.")
 
                 elif "/static" in message_data:
                     response = setIP(message_data)
