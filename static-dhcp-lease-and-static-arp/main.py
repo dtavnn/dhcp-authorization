@@ -227,7 +227,7 @@ def setIP(message_data):
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
 
-    if input[1] and input[2]:
+    try:
         leases = api.get_resource('ip/dhcp-server/lease')
         dhcp = leases.get(mac_address=input[1], dynamic="no")
         if dhcp:
@@ -251,7 +251,7 @@ def setIP(message_data):
                 )
         else:
             sendMessage("⚠️ Error: Last action failed.")
-    else:
+    except :
         sendMessage("⚠️ Error: Last action failed.")
 
     logout(netmiko, rosapi)
