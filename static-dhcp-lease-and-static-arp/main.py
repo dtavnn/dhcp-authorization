@@ -218,7 +218,7 @@ def showMac(message_data):
         else:
             return {"status":False,"data":"Related DHCP lease not found."}
     except:
-        sendMessage("⚠️ Error: Last action failed.")
+        sendMessage("⚠️ Error: Last action failed")
         return "Error occured."
 ## END: show data by mac address
 
@@ -253,9 +253,9 @@ def setIP(message_data):
                     "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + input[2] + "*"
                 )
         else:
-            sendMessage("⚠️ Error: Last action failed.")
+            sendMessage("⚠️ Error: Last action failed")
     except :
-        sendMessage("⚠️ Error: Last action failed.")
+        sendMessage("⚠️ Error: Last action failed")
 
     logout(netmiko, rosapi)
     return "setIP() done."
