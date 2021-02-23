@@ -218,6 +218,8 @@ def showMac(message_data):
         else:
             return {"status":False,"data":"Related DHCP lease not found."}
     except:
+        sendMessage("⚠️ Error: Last action failed.")
+        return "Error occured."
 ## END: show data by mac address
 
 
