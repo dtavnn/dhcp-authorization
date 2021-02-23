@@ -209,11 +209,42 @@ def showWhitelist():
             message += "Empty Data"
 
         logout(netmiko, rosapi)
+        return {"status":True, "data": message}
             
     except:
         sendMessage("⚠️ Error: Action failed")
-        return "Error occured."
+        return {"status":False, "data": "Action failed"}
 ## END: show whitelist
+
+
+## START: show blacklist
+def showBlacklist():
+    netmiko = netmiko_conn(router, username, password)
+    rosapi = rosapi_conn(router, username, password)
+    api = rosapi.get_api()
+
+    try:
+        leases = api.get_resource('ip/dhcp-server/lease')
+        dhcp = leases.get(dynamic="no")
+
+        message = "🔰 Allowed Device 🔰\n\n"
+        if dhcp:
+            for item in dhcp:
+                message += "• " + msgencode(item['host-name']) + "\n"
+                message += "MAC: " + item['mac-address'] + "\n"
+                message += "IP: " + msgencode(item['ip']) + "\n\n"
+
+        else:
+            message += "Empty Data"
+
+        logout(netmiko, rosapi)
+        return {"status":True, "data": message}
+            
+    except:
+        sendMessage("⚠️ Error: Action failed")
+        return {"status":False, "data": "Action failed"}
+## END: show blacklist
+
 
 ## START: show data by mac address
 def showMac(message_data):
@@ -236,14 +267,14 @@ def showMac(message_data):
                     "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
                 )
             logout(netmiko, rosapi)
-            return "showMac() done."
+            return {"status":True, "data":"showMac() done."}
         else:
             logout(netmiko, rosapi)
             return {"status":False,"data":"Related DHCP lease not found."}
     except:
         sendMessage("⚠️ Error: Action failed")
         logout(netmiko, rosapi)
-        return "Error occured."
+        return {"status":False,"data":"Action failed."}
     
 ## END: show data by mac address
 
@@ -333,10 +364,10 @@ def webhook():
                     response = showMac(message_data)
 
                 elif "/whitelist" in message_data:
-                    pass
+                    response = showWhitelist()
 
                 elif "/blacklist" in message_data:
-                    pass
+                    response = showBlacklist()
                 
                 elif "/allow" in message_data:
                     pass
