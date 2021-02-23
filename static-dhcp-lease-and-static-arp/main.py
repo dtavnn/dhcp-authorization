@@ -318,8 +318,6 @@ def webhook():
                 response = {"status":False,"data":"Unknown source."}
 
         elif message:
-            print(input['message']['from']['id'])
-            print(chat_id)
 
             if input['message']['from']['id'] == int(chat_id):
                 message_id = input['message']['message_id']
@@ -354,7 +352,7 @@ def webhook():
         else:
             response = {"status":False,"data":"Invalid Message."}
 
-        print(response)
+        print(json.dumps(response, indent=4))
         return jsonify(response)
     else:
         print("Feedback: Invalid JSON format.")
