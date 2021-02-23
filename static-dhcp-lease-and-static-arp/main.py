@@ -363,7 +363,7 @@ def push_notif():
         
         response = sendMessage(message, keyboard)
         print("=========== Feedback: Notification sent ===========")
-        print(response)
+        print(json.dumps(response, indent=4))
         return jsonify({"status":True,"data":"Notification sent."})
     else:
         print("Feedback: Empty Data Received")
