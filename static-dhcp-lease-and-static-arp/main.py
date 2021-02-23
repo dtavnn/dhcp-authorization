@@ -212,8 +212,8 @@ def showWhitelist():
         return {"status":True, "data": message}
             
     except:
-        sendMessage("⚠️ Error: Action failed")
-        return {"status":False, "data": "Action failed"}
+        sendMessage("⚠️ showWhitelist error: Action failed")
+        return {"status":False, "data": "showWhitelist: Action failed"}
 ## END: show whitelist
 
 
@@ -242,8 +242,8 @@ def showBlacklist():
             
     except:
         print(getException())
-        sendMessage("⚠️ Error: Action failed")
-        return {"status":False, "data": "Action failed"}
+        sendMessage("⚠️ showBlacklist Error: Action failed")
+        return {"status":False, "data": "showBlacklist: Action failed"}
 ## END: show blacklist
 
 
@@ -274,9 +274,9 @@ def showMac(message_data):
             return {"status":False,"data":"Related DHCP lease not found."}
     except:
         print(getException())
-        sendMessage("⚠️ Error: Action failed")
+        sendMessage("⚠️ showMac error: action failed")
         logout(netmiko, rosapi)
-        return {"status":False,"data":"Action failed."}
+        return {"status":False,"data":"showMac: Action failed."}
     
 ## END: show data by mac address
 
@@ -310,11 +310,11 @@ def setIP(message_data):
                     "*\nOld IP: ~" + msgencode(oldip) + "~\nNew IP: *" + msgencode(input[2]) + "*"
                 )
         else:
-            response = sendMessage("⚠️ Error: Action failed")
-            
+            response = sendMessage("⚠️ Couldn't change the IP address")
+
     except :
         print(getException())
-        response = sendMessage("⚠️ Error: Action failed")
+        response = sendMessage("⚠️ setIP Error: Action failed")
 
     logout(netmiko, rosapi)
     return response
