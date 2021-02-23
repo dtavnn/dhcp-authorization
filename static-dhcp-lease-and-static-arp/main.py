@@ -250,7 +250,7 @@ def setIP(message_data):
 
         if success:
             sendMessage("ℹ️ IP Changed ℹ️\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
-                    "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + input[2] + "*"
+                    "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + msgencode(input[2]) + "*"
                 )
         else:
             sendMessage("⚠️ Error: Last action failed")
