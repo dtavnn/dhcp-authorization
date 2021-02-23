@@ -193,8 +193,6 @@ def authorization(message_id, message_data):
 ## START: show data by mac address
 def showMac(message_data):
     input = message_data.split()
-
-    print(input)
     netmiko = netmiko_conn(router, username, password)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
@@ -218,7 +216,7 @@ def showMac(message_data):
         else:
             return {"status":False,"data":"Related DHCP lease not found."}
     except:
-        sendMessage("⚠️ Error: Last action failed")
+        sendMessage("⚠️ Error: Action failed")
         return "Error occured."
 ## END: show data by mac address
 
@@ -226,7 +224,6 @@ def showMac(message_data):
 ## START: change IP address
 def setIP(message_data):
     input = message_data.split()
-    print(input)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
     netmiko = netmiko_conn(router, username, password)
@@ -249,16 +246,16 @@ def setIP(message_data):
             print(getException())
 
         if success:
-            sendMessage("✅ IP Changed ✅\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
-                    "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + msgencode(input[2]) + "*"
+            response = sendMessage("✅ IP Changed ✅\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
+                    "*\nOld IP: ~" + msgencode(oldip) + "~\nNew IP: *" + msgencode(input[2]) + "*"
                 )
         else:
-            sendMessage("⚠️ Error: Last action failed")
+            response = sendMessage("⚠️ Error: Action failed")
     except :
-        sendMessage("⚠️ Error: Last action failed")
+        response = sendMessage("⚠️ Error: Action failed")
 
     logout(netmiko, rosapi)
-    return "setIP() done."
+    return response
 ## END: change IP address
 
 
@@ -283,30 +280,49 @@ def webhook():
             message = None
 
         if callback:
-            message_id = input['callback_query']['message']['message_id']
-            if input['callback_query']['data']:
-                message_data = input['callback_query']['data']
-                response = authorization(message_id, message_data)
+            if input['callback_query']['message']['from']['id'] == chat_id:
+                message_id = input['callback_query']['message']['message_id']
+                if input['callback_query']['data']:
+                    message_data = input['callback_query']['data']
+                    response = authorization(message_id, message_data)
+                else:
+                    response = {"status":False,"data":"Wrong Command."}
             else:
-                response = {"status":False,"data":"Wrong Command."}
+                response = {"status":False,"data":"Unknown source."}
 
         elif message:
-            message_id = input['message']['message_id']
-            message_data = input['message']['text']
-            if "/static" in message_data:
-                response = setIP(message_data)
-            elif "/show" in message_data:
-                response = showMac(message_data)
-            else: 
-                response = {"status":False,"data":"Wrong Command."}
+            if input['message']['from']['id'] == chat_id:
+                message_id = input['message']['message_id']
+                message_data = input['message']['text']
+
+                if "/help" in message_data:
+                    response = sendMessage("ℹ️ Available Commands ℹ️\n*/help* : Display available commands.\n*/show _<mac>_* : Show IP based on Mac address.\n*/static _<mac> <ip>_* :  Change the leased IP address.\n*/allow _<mac>_* : Allow blocked device.\n*/deny _<mac>_* : Deny allowed device.\n\nNote:\n*_<something>_* is required varibale.")
+
+                elif "/static" in message_data:
+                    response = setIP(message_data)
+
+                elif "/show" in message_data:
+                    response = showMac(message_data)
+
+                elif "/allow" in message_data:
+                    pass
+
+                elif "/deny" in message_data:
+                    pass
+                
+                else: 
+                    response = {"status":False,"data":"Wrong Command."}
+            else:
+                response = {"status":False,"data":"Unknown source."}
+
         else:
-            response = {"status":False,"data":"Wrong Command."}
+            response = {"status":False,"data":"Invalid Message."}
 
         print(response)
         return jsonify(response)
     else:
-        print("Feedback: Wrong JSON format.")
-        return jsonify({"status":False,"data":"Wrong JSON format."})
+        print("Feedback: Invalid JSON format.")
+        return jsonify({"status":False,"data":"Invalid JSON format."})
 ## end webhook
 
 
