@@ -24,13 +24,13 @@ password = os.environ.get('ROUTER_PASSWORD')
 
 ## exception
 def getException():
-    exc = sys.exc_info()
-    f = exc.tb_frame
-    lineno = exc.tb_lineno
+    exc_type, exc_obj, tb = sys.exc_info()
+    f = tb.tb_frame
+    lineno = tb.tb_lineno
     filename = f.f_code.co_filename
     linecache.checkcache(filename)
     line = linecache.getline(filename, lineno, f.f_globals)
-    return 'EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc)
+    return 'EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj)
 
 ## netmiko connection
 def netmiko_conn(host, username, password):
