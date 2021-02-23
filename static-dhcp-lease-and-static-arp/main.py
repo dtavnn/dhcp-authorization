@@ -301,6 +301,7 @@ def webhook():
                 response = {"status":False,"data":"Wrong Command."}
         else:
             response = {"status":False,"data":"Wrong Command."}
+
         print(response)
         return jsonify(response)
     else:
