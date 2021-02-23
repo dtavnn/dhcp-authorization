@@ -276,6 +276,12 @@ def webhook():
         except:
             callback = None
 
+        try:
+            input['message']
+            message = True
+        except:
+            message = None
+
         if callback:
             message_id = input['callback_query']['message']['message_id']
             if input['callback_query']['data']:
@@ -284,7 +290,7 @@ def webhook():
             else:
                 response = {"status":False,"data":"Wrong Command."}
 
-        else:
+        elif message:
             message_id = input['message']['message_id']
             message_data = input['message']['text']
             if "/static" in message_data:
@@ -293,6 +299,8 @@ def webhook():
                 response = showMac(message_data)
             else: 
                 response = {"status":False,"data":"Wrong Command."}
+        else:
+            response = {"status":False,"data":"Wrong Command."}
         print(response)
         return jsonify(response)
     else:
