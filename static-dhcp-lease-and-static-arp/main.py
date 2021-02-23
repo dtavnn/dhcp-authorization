@@ -227,27 +227,30 @@ def setIP(message_data):
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
 
-    leases = api.get_resource('ip/dhcp-server/lease')
-    dhcp = leases.get(mac_address=input[1], dynamic="no")
-    if dhcp:
-        for item in dhcp:
-            host = item['host-name']
-            oldip = item['address']
+    if input[1] and input[2]:
+        leases = api.get_resource('ip/dhcp-server/lease')
+        dhcp = leases.get(mac_address=input[1], dynamic="no")
+        if dhcp:
+            for item in dhcp:
+                host = item['host-name']
+                oldip = item['address']
 
-    netmiko = netmiko_conn(router, username, password)
-    try:
-        netmiko.send_config_set([
-            '/ip dhcp-server lease make-static set [find mac-address=' + input[1] + '] address="' + input[2] + '"',
-            '/ip arp set [find mac-address=' + input[1] + '] address="' + input[2] + '"'
-        ])
-        success = True
-    except:
-        print(getException())
+        netmiko = netmiko_conn(router, username, password)
+        try:
+            netmiko.send_config_set([
+                '/ip dhcp-server lease make-static set [find mac-address=' + input[1] + '] address="' + input[2] + '"',
+                '/ip arp set [find mac-address=' + input[1] + '] address="' + input[2] + '"'
+            ])
+            success = True
+        except:
+            print(getException())
 
-    if success:
-        sendMessage("ℹ️ IP Changed ℹ️\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
-                "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + input[2] + "*"
-            )
+        if success:
+            sendMessage("ℹ️ IP Changed ℹ️\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
+                    "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + input[2] + "*"
+                )
+        else:
+            sendMessage("⚠️ Error: Last action failed.")
     else:
         sendMessage("⚠️ Error: Last action failed.")
 
