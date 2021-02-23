@@ -86,9 +86,8 @@ def logging(data):
         object = json.load(file) 
         for key in data:
             object[key] = {
-                "comment": data[key]['comment'],
                 "ip_address": data[key]['ip'],
-                "registered": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                "registered": data[key]['comment'],
             }
 
         file.seek(0)
@@ -156,7 +155,7 @@ def authorization(message_id, message_data):
             interface = os.environ.get('DHCP_INTERFACE')
 
             if input['action'] == 'allow':
-                comment = "allow " + host
+                comment = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 netmiko.send_config_set([
                     '/ip dhcp-server lease make-static [find mac-address=' + mac + ']',
                     '/ip dhcp-server lease set [find mac-address=' + mac + '] comment="' + comment + '"',
@@ -167,7 +166,7 @@ def authorization(message_id, message_data):
                 )
                 deleteMessage(message_id)
             else:
-                comment = "deny " + host
+                comment = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 netmiko.send_config_set([
                     '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac + ' comment="' + comment + '"',
                     '/ip dhcp-server lease remove [find mac-address=' + mac + ']',
@@ -189,6 +188,32 @@ def authorization(message_id, message_data):
         return {"status":False,"data":"Related DHCP lease not found."}
 ## END: authorize new connected device
 
+## START: show whitelist
+def showWhitelist():
+    netmiko = netmiko_conn(router, username, password)
+    rosapi = rosapi_conn(router, username, password)
+    api = rosapi.get_api()
+
+    try:
+        leases = api.get_resource('ip/dhcp-server/lease')
+        dhcp = leases.get(dynamic="no")
+
+        message = "🔰 Allowed Device 🔰\n\n"
+        if dhcp:
+            for item in dhcp:
+                message += "• " + msgencode(item['host-name']) + "\n"
+                message += "MAC: " + item['mac-address'] + "\n"
+                message += "IP: " + msgencode(item['ip']) + "\n\n"
+
+        else:
+            message += "Empty Data"
+
+        logout(netmiko, rosapi)
+            
+    except:
+        sendMessage("⚠️ Error: Action failed")
+        return "Error occured."
+## END: show whitelist
 
 ## START: show data by mac address
 def showMac(message_data):
@@ -210,14 +235,16 @@ def showMac(message_data):
                 sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
                     "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
                 )
-
             logout(netmiko, rosapi)
             return "showMac() done."
         else:
+            logout(netmiko, rosapi)
             return {"status":False,"data":"Related DHCP lease not found."}
     except:
         sendMessage("⚠️ Error: Action failed")
+        logout(netmiko, rosapi)
         return "Error occured."
+    
 ## END: show data by mac address
 
 
