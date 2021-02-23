@@ -241,7 +241,7 @@ def setIP(message_data):
 
         try:
             netmiko.send_config_set([
-                '/ip dhcp-server lease make-static set [find mac-address=' + input[1] + '] address="' + input[2] + '"',
+                '/ip dhcp-server lease set [find mac-address=' + input[1] + '] address="' + input[2] + '"',
                 '/ip arp set [find mac-address=' + input[1] + '] address="' + input[2] + '"'
             ])
             success = True
