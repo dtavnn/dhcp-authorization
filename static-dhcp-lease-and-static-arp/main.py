@@ -90,9 +90,9 @@ def logging(data):
     with open(os.environ.get('LOG_FILE'), "r+") as file: 
         object = json.load(file) 
         for key in data:
-            object[key['mac']] = {
-                "comment": key['mac']['comment'],
-                "ip_address": key['mac']['ip'],
+            object[key] = {
+                "comment": key['comment'],
+                "ip_address": key['ip'],
                 "registered": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
