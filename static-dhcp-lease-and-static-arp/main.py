@@ -241,6 +241,7 @@ def showBlacklist():
         return {"status":True, "data": message}
             
     except:
+        print(getException())
         sendMessage("⚠️ Error: Action failed")
         return {"status":False, "data": "Action failed"}
 ## END: show blacklist
@@ -272,6 +273,7 @@ def showMac(message_data):
             logout(netmiko, rosapi)
             return {"status":False,"data":"Related DHCP lease not found."}
     except:
+        print(getException())
         sendMessage("⚠️ Error: Action failed")
         logout(netmiko, rosapi)
         return {"status":False,"data":"Action failed."}
@@ -309,7 +311,9 @@ def setIP(message_data):
                 )
         else:
             response = sendMessage("⚠️ Error: Action failed")
+            
     except :
+        print(getException())
         response = sendMessage("⚠️ Error: Action failed")
 
     logout(netmiko, rosapi)
