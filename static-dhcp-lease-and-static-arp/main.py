@@ -134,7 +134,7 @@ def deleteMessage(message_id):
     return requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
 
 
-## authorize new connected device
+## START authorize new connected device
 def authorization(message_id, message_data):
     input = json.loads(message_data)
 
@@ -187,6 +187,72 @@ def authorization(message_id, message_data):
         return result
     else:
         return {"status":False,"data":"Related DHCP lease not found."}
+## END: authorize new connected device
+
+
+## START: show data by mac address
+def showMac(message_data):
+    input = message_data.split()
+
+    netmiko = netmiko_conn(router, username, password)
+    rosapi = rosapi_conn(router, username, password)
+    api = rosapi.get_api()
+
+    # get dhcp lease based on mac-address
+    leases = api.get_resource('ip/dhcp-server/lease')
+    dhcp = leases.get(mac_address=input[1], dynamic="no")
+
+    if dhcp:
+        for item in dhcp:
+            # get the id only
+            host = item['host-name']
+            ip = item['address']
+            mac = item['mac-address']
+            sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
+                "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
+            )
+
+        logout(netmiko, rosapi)
+        return "showMac() done."
+    else:
+        return {"status":False,"data":"Related DHCP lease not found."}
+## END: show data by mac address
+
+
+## START: change IP address
+def setIP(message_data):
+    input = message_data.split()
+
+    netmiko = netmiko_conn(router, username, password)
+    rosapi = rosapi_conn(router, username, password)
+    api = rosapi.get_api()
+
+    leases = api.get_resource('ip/dhcp-server/lease')
+    dhcp = leases.get(mac_address=input[1], dynamic="no")
+    if dhcp:
+        for item in dhcp:
+            host = item['host-name']
+            oldip = item['address']
+
+    try:
+        netmiko.send_config_set([
+            '/ip dhcp-server lease make-static set [find mac-address=' + input[1] + '] address="' + input[2] + '"',
+            '/ip arp set [find mac-address=' + input[1] + '] address="' + input[2] + '"'
+        ])
+        success = True
+    except:
+        print(getException())
+
+    if success:
+        sendMessage("ℹ️ IP Changed ℹ️\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + input[1] +
+                "*\nOld IP: *" + msgencode(oldip) + "*\nNew IP: *" + input[2] + "*"
+            )
+    else:
+        sendMessage("⚠️ Error: Last action failed.")
+
+    logout(netmiko, rosapi)
+    return "setIP() done."
+## END: change IP address
 
 
 
@@ -197,8 +263,17 @@ def webhook():
         input = request.get_json()
         print(json.dumps(input, indent=4))
         message_id = input['callback_query']['message']['message_id']
-        message_data = input['callback_query']['data']
-        response = authorization(message_id, message_data)
+        if input['callback_query']['data']:
+            message_data = input['callback_query']['data']
+            response = authorization(message_id, message_data)
+        else:
+            message_data = input['callback_query']['message']['text']
+            if "/static" in message_data:
+                response = setIP(message_data)
+            elif "/show" in message_data:
+                response = showMac(message_data)
+            else: 
+                response = {"status":False,"data":"Wrong Command."}
         print(response)
         return jsonify(response)
     else:
