@@ -194,35 +194,36 @@ def authorization(message_id, message_data):
 def showMac(message_data):
     input = message_data.split()
 
+    print(input)
     netmiko = netmiko_conn(router, username, password)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
 
-    # get dhcp lease based on mac-address
-    leases = api.get_resource('ip/dhcp-server/lease')
-    dhcp = leases.get(mac_address=input[1], dynamic="no")
+    try:
+        leases = api.get_resource('ip/dhcp-server/lease')
+        dhcp = leases.get(mac_address=input[1], dynamic="no")
 
-    if dhcp:
-        for item in dhcp:
-            # get the id only
-            host = item['host-name']
-            ip = item['address']
-            mac = item['mac-address']
-            sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
-                "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
-            )
+        if dhcp:
+            for item in dhcp:
+                # get the id only
+                host = item['host-name']
+                ip = item['address']
+                mac = item['mac-address']
+                sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
+                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
+                )
 
-        logout(netmiko, rosapi)
-        return "showMac() done."
-    else:
-        return {"status":False,"data":"Related DHCP lease not found."}
+            logout(netmiko, rosapi)
+            return "showMac() done."
+        else:
+            return {"status":False,"data":"Related DHCP lease not found."}
+    except:
 ## END: show data by mac address
 
 
 ## START: change IP address
 def setIP(message_data):
     input = message_data.split()
-    print(message_data)
     print(input)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
