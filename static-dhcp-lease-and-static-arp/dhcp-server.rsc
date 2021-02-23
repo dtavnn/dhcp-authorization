@@ -13,9 +13,3 @@
     /tool fetch url=$push  http-method=post output=none http-data=$new
   };
 };
-
-
- ip dhcp-server lease make-static [find mac-address=70:5E:55:6B:CE:2D]
-[admin@IDN-Rizqi] > ip dhcp-server lease set [find mac-address=70:5E:55:6B:CE:2D] 
-comment=r3p
-[admin@IDN-Rizqi] > ip arp add address=10.10.10.254 mac-address=70:5E:55:6B:CE:2D interface=wifi
