@@ -281,6 +281,7 @@ def webhook():
         else:
             message_id = input['message']['message_id']
             message_data = input['message']['text']
+            print('New: ' + message_data)
             if "/static" in message_data:
                 response = setIP(message_data)
             elif "/show" in message_data:
