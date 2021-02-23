@@ -226,6 +226,7 @@ def setIP(message_data):
     print(input)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
+    netmiko = netmiko_conn(router, username, password)
 
     try:
         leases = api.get_resource('ip/dhcp-server/lease')
@@ -235,7 +236,6 @@ def setIP(message_data):
                 host = item['host-name']
                 oldip = item['address']
 
-        netmiko = netmiko_conn(router, username, password)
         try:
             netmiko.send_config_set([
                 '/ip dhcp-server lease make-static set [find mac-address=' + input[1] + '] address="' + input[2] + '"',
