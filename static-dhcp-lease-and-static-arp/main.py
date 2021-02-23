@@ -262,12 +262,18 @@ def webhook():
     if request.is_json:
         input = request.get_json()
         print(json.dumps(input, indent=4))
-        message_id = input['callback_query']['message']['message_id']
-        if input['callback_query']['data']:
-            message_data = input['callback_query']['data']
-            response = authorization(message_id, message_data)
+
+        if ['callback_query']:
+            message_id = input['callback_query']['message']['message_id']
+            if input['callback_query']['data']:
+                message_data = input['callback_query']['data']
+                response = authorization(message_id, message_data)
+            else:
+                response = {"status":False,"data":"Wrong Command."}
+
         else:
-            message_data = input['callback_query']['message']['text']
+            message_id = input['message']['message_id']
+            message_data = input['message']['text']
             if "/static" in message_data:
                 response = setIP(message_data)
             elif "/show" in message_data:
