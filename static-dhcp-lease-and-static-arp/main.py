@@ -293,7 +293,8 @@ def webhook():
         elif message:
             print(input['message']['from']['id'])
             print(chat_id)
-            if input['message']['from']['id'] == chat_id:
+
+            if int(input['message']['from']['id']) == int(chat_id):
                 message_id = input['message']['message_id']
                 message_data = input['message']['text']
 
