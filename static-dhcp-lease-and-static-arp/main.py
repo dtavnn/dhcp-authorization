@@ -153,7 +153,8 @@ def sendMessage(message):
         "parse_mode": "MarkdownV2",
         "disable_web_page_preview": True
     }
-    requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
+    response = requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
+    print(response)
 
 def deleteMessage(message_id):
     url = "https://api.telegram.org/bot" + api_bot + "/deleteMessage"
@@ -164,12 +165,13 @@ def deleteMessage(message_id):
         "chat_id": chat_id,
         "message_id": message_id,
     }
-    requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
+    response = requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
+    print(response)
 
 ## begin /webhook
 @app.route('/webhook', methods = ['POST'])
 def webhook():
-    interface = "wifi"
+    interface = os.environ.get('DHCP_INTERFACE')
 
     if request.is_json:
         input = request.get_json()
@@ -202,13 +204,13 @@ def webhook():
                         '/ip dhcp-server lease set [find mac-address=' + mac + '] comment=' + comment,
                         '/ip arp add address=' + ip + ' mac-address=' + mac + ' interface=' + interface
                     ])
-                    sendMessage("✅ Device Allowed ✅\nHostname: *" + host +
-        "*\nIP: *" + ip + "*\nMAC Address: *" + mac + "*")
+                    sendMessage("✅ Device Allowed ✅\nHostname: *" + msgencode(host) +
+        "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*")
                     deleteMessage(message_id)
                 else:
                     comment = "deny " + host
                     netmiko.send_config_set([
-                        '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac,
+                        '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac + ' comment="' + comment + '"',
                         '/ip dhcp-server lease remove [find mac-address=' + mac + ']',
                     ])
                     sendMessage("❌ Device Denied ❌\nHostname: *" + host +
@@ -223,11 +225,13 @@ def webhook():
             logging(result)
             logout(netmiko, rosapi)
             return jsonify(result)
-
-        return jsonify(input)
+        else:
+            print("Feedback: Related DHCP lease not found.")
+            return jsonify({"status":False,"data":"Related DHCP lease not found."})
 
     else:
-        return "JSON Empty"
+        print("Feedback: Wrong JSON format.")
+        return jsonify({"status":False,"data":"Wrong JSON format."})
 ## end webhook
 
 
@@ -238,7 +242,6 @@ def push_notif():
     print(url)
     if request.form:
         data = request.form.copy()
-        print(data)
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         host = msgencode(data['host'])
         ip = msgencode(data['ip'])
@@ -270,9 +273,9 @@ def push_notif():
         }
         response = requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
         print(response)
-        return "Sent"
+        return "Feedback: Notification sent"
     else:
-        print("None")
+        print("Feedback: Empty Data Received")
         return jsonify({"status":False,"data":None})
 ## end /push_notif
 

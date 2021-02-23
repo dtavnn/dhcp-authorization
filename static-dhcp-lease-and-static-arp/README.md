@@ -35,11 +35,12 @@ $ pip3 install -r requirements.txt
 
 6. Add required environment variables.
 ```
-export API_BOT="1555959235:AAFZfmB6UH-e-FLnJS31GRAAaocYNc8hrqU"
-export CHAT_ID=240072653
+export API_BOT="1555959235:AAHCGtLj5NDazIDW7qTaohqcv9SUNyVXZ5g"
+export CHAT_ID=290072888
 export ROUTER="10.0.22.2"
 export ROUTER_USER="admin"
 export ROUTER_PASSWORD="123"
+export DHCP_INTERFACE="wifi"
 export LOG_FILE="/home/xdnroot/Documents/repository/mikrotik-scripting/static-dhcp-lease-and-static-arp/log.json"
 ```
 
