@@ -294,7 +294,7 @@ def webhook():
             print(input['message']['from']['id'])
             print(chat_id)
 
-            if int(input['message']['from']['id']) == int(chat_id):
+            if int(input['message']['from']['id']) == chat_id:
                 message_id = input['message']['message_id']
                 message_data = input['message']['text']
 
