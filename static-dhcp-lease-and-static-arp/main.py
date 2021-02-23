@@ -86,10 +86,11 @@ def msgencode(text):
 # ]   
 def logging(data):
     print('logging data')
-    print(data)
     with open(os.environ.get('LOG_FILE'), "r+") as file: 
         object = json.load(file) 
+        print(object)
         for key in data:
+            print(key)
             object[key] = {
                 "comment": key['comment'],
                 "ip_address": key['ip'],
