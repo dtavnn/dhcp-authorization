@@ -104,9 +104,6 @@ def sendMessage(message, keyboard=None):
     }
 
     if keyboard:
-        headers = {
-        'Content-Type': 'application/json'
-        }
         payload = {
             "chat_id": chat_id,
             "text": message,
@@ -114,8 +111,6 @@ def sendMessage(message, keyboard=None):
             "disable_web_page_preview": True,
             "reply_markup": keyboard
         }
-        response = requests.request("POST", url, headers=headers, data=json.dumps(payload)).json()
-        print(response)
     else:
         payload = {
             "chat_id": chat_id,
