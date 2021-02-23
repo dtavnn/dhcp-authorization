@@ -85,6 +85,8 @@ def msgencode(text):
 #   }
 # ]   
 def logging(data):
+    print('logging data')
+    print(data)
     with open(os.environ.get('LOG_FILE'), "r+") as file: 
         object = json.load(file) 
         for key in data:
@@ -190,7 +192,6 @@ def webhook():
 
         if dhcp:
             result = {}
-            x = 0
             for item in dhcp:
                 # get the id only
                 host = item['host-name']
@@ -213,8 +214,8 @@ def webhook():
                         '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac + ' comment="' + comment + '"',
                         '/ip dhcp-server lease remove [find mac-address=' + mac + ']',
                     ])
-                    sendMessage("❌ Device Denied ❌\nHostname: *" + host +
-        "*\nIP: *" + ip + "*\nMAC Address: *" + mac + "*")
+                    sendMessage("❌ Device Denied ❌\nHostname: *" + msgencode(host) +
+        "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*")
                     deleteMessage(message_id)
 
                 result[mac] =  {
@@ -222,6 +223,7 @@ def webhook():
                     "ip": ip
                 }
 
+            print(result)
             logging(result)
             logout(netmiko, rosapi)
             return jsonify(result)
