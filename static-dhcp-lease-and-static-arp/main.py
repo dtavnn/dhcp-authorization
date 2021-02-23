@@ -224,7 +224,6 @@ def setIP(message_data):
     input = message_data.split()
     print(message_data)
     print(input)
-    netmiko = netmiko_conn(router, username, password)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
 
@@ -235,6 +234,7 @@ def setIP(message_data):
             host = item['host-name']
             oldip = item['address']
 
+    netmiko = netmiko_conn(router, username, password)
     try:
         netmiko.send_config_set([
             '/ip dhcp-server lease make-static set [find mac-address=' + input[1] + '] address="' + input[2] + '"',
@@ -281,7 +281,6 @@ def webhook():
         else:
             message_id = input['message']['message_id']
             message_data = input['message']['text']
-            print('New: ' + message_data)
             if "/static" in message_data:
                 response = setIP(message_data)
             elif "/show" in message_data:
