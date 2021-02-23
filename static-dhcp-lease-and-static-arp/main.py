@@ -212,6 +212,7 @@ def showWhitelist():
         return {"status":True, "data": message}
             
     except:
+        print(getException())
         sendMessage("⚠️ showWhitelist error: Action failed")
         return {"status":False, "data": "showWhitelist: Action failed"}
 ## END: show whitelist
