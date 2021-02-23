@@ -222,7 +222,8 @@ def showMac(message_data):
 ## START: change IP address
 def setIP(message_data):
     input = message_data.split()
-
+    print(message_data)
+    print(input)
     netmiko = netmiko_conn(router, username, password)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
