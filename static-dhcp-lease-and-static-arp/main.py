@@ -169,7 +169,7 @@ def authorization(message_id, message_data):
                 comment = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 netmiko.send_config_set([
                     '/ip dhcp-server lease make-static [find mac-address=' + mac + ']',
-                    '/ip dhcp-server lease set [find mac-address=' + mac + '] address=0.0.0.0 block-access=yes comment="' + comment + '"' ,
+                    '/ip dhcp-server lease set [find mac-address=' + mac + '] address=0.0.0.0 block-access=yes comment="' + comment + '"' 
                 ])
                 sendMessage("❌ Device Denied ❌\nHostname: *" + msgencode(host) +
                     "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
@@ -248,12 +248,82 @@ def showBlacklist():
         print(getException())
         sendMessage("⚠️ showBlocklist error: Action failed")
         return {"status":False, "data": "showBlocklist error: Action failed"}
-## END: show whitelist
-
 ## END: show blacklist
 
 
-## START: show data by mac address
+## START: unblock device
+def unblock(message_data):
+    input = message_data.split()
+    netmiko = netmiko_conn(router, username, password)
+    rosapi = rosapi_conn(router, username, password)
+    api = rosapi.get_api()
+
+    try:
+        leases = api.get_resource('ip/dhcp-server/lease')
+        dhcp = leases.get(dynamic="no", block_access="yes", mac_address=input[1])
+
+        message = "ℹ️ Unblocked Device ℹ️\n\n"
+        if dhcp:
+            for item in dhcp:
+                comment = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                netmiko.send_config_set([
+                    '/ip dhcp-server lease remove [find mac-address=' + input[1] + ']'
+                ])
+                message += "Hostname: " + msgencode(item['host-name']) + "\n"
+                message += "MAC: " + item['mac-address'] + "\n"
+
+        else:
+            message += "MAC address not found in blacklist"
+
+        sendMessage(message)
+        logout(netmiko, rosapi)
+        return {"status":True, "data": message}
+            
+    except:
+        print(getException())
+        sendMessage("⚠️ unblock error: Action failed")
+        return {"status":False, "data": "unblock error: Action failed"}
+## END: unblock device
+
+
+
+## START: block device
+def block(message_data):
+    input = message_data.split()
+    netmiko = netmiko_conn(router, username, password)
+    rosapi = rosapi_conn(router, username, password)
+    api = rosapi.get_api()
+
+    try:
+        leases = api.get_resource('ip/dhcp-server/lease')
+        dhcp = leases.get(dynamic="no", block_access="no", mac_address=input[1])
+
+        message = "❌ Device Denied ❌\n\n"
+        if dhcp:
+            for item in dhcp:
+                comment = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                netmiko.send_config_set([
+                    '/ip dhcp-server lease set [find mac-address=' + input[1] + '] address=0.0.0.0 block-access=yes comment="' + comment + '"' ,
+                    '/ip arp remove [find mac-address=' + input[1] + ']'
+                ])
+                message += "Hostname: " + msgencode(item['host-name']) + "\n"
+                message += "MAC: " + item['mac-address'] + "\n"
+
+        else:
+            message += "MAC address not found in whitelist"
+
+        sendMessage(message)
+        logout(netmiko, rosapi)
+        return {"status":True, "data": message}
+            
+    except:
+        print(getException())
+        sendMessage("⚠️ block error: Action failed")
+        return {"status":False, "data": "block error: Action failed"}
+## END: block device
+
+
+## START: show data based on mac address
 def showMac(message_data):
     input = message_data.split()
     netmiko = netmiko_conn(router, username, password)
@@ -283,8 +353,7 @@ def showMac(message_data):
         sendMessage("⚠️ showMac error: action failed")
         logout(netmiko, rosapi)
         return {"status":False,"data":"showMac: Action failed."}
-    
-## END: show data by mac address
+## END: show data based on mac address
 
 
 ## START: change IP address
@@ -365,7 +434,7 @@ def webhook():
                 message_data = input['message']['text']
 
                 if "/help" in message_data:
-                    response = sendMessage("ℹ️ Available Commands ℹ️\n*/help* : Show available commands\\.\n*/whitelist* : Show allowed devices\\.\n*/blacklist* : Show blocked devices\\.\n*/show _\\<mac\\>_* : Show IP based on Mac address\\.\n*/static _\\<mac\\> \\<ip\\>_* :  Change the leased IP address\\.\n*/allow _\\<mac\\>_* : Allow blocked device\\.\n*/deny _\\<mac\\>_* : Deny allowed device\\.\n\nNote:\n*_\\<something\\>_* is required varibale\\.")
+                    response = sendMessage("ℹ️ Available Commands ℹ️\n*/help* : Show available commands\\.\n*/whitelist* : Show allowed devices\\.\n*/blacklist* : Show blocked devices\\.\n*/show _\\<mac\\>_* : Show IP based on Mac address\\.\n*/static _\\<mac\\> \\<ip\\>_* :  Change the leased IP address\\.\n*/unblock _\\<mac\\>_* : Allow blocked device\\.\n*/block _\\<mac\\>_* : Deny allowed device\\.\n\nNote:\n*_\\<something\\>_* is required varibale\\.")
 
                 elif "/static" in message_data:
                     response = setIP(message_data)
@@ -379,11 +448,11 @@ def webhook():
                 elif "/blacklist" in message_data:
                     response = showBlacklist()
                 
-                elif "/allow" in message_data:
-                    pass
+                elif "/unblock" in message_data:
+                    response = unblock(message_data)
 
-                elif "/deny" in message_data:
-                    pass
+                elif "/block" in message_data:
+                    response = block(message_data)
                 
                 else: 
                     response = {"status":False,"data":"Wrong Command."}
