@@ -58,7 +58,6 @@ if __name__ == '__main__':
 $ python3 main.py
 ```
 ```
-(venv) xdn@sg1:~/mikrotik/static-dhcp-lease-and-static-arp$ python3 main.py 
  * Serving Flask app "main" (lazy loading)
  * Environment: production
    WARNING: This is a development server. Do not use it in a production deployment.
