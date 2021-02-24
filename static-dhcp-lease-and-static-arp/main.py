@@ -196,9 +196,9 @@ def showWhitelist():
 
     try:
         leases = api.get_resource('ip/dhcp-server/lease')
-        dhcp = leases.get(dynamic="no")
+        dhcp = leases.get(dynamic="no", block_access="no")
 
-        message = "🔰 Allowed Device 🔰\n\n"
+        message = "✅ Allowed Device ✅\n\n"
         if dhcp:
             for item in dhcp:
                 message += "• " + msgencode(item['host-name']) + "\n"
@@ -216,37 +216,41 @@ def showWhitelist():
     except:
         print(getException())
         sendMessage("⚠️ showWhitelist error: Action failed")
-        return {"status":False, "data": "showWhitelist: Action failed"}
+        return {"status":False, "data": "showWhitelist error: Action failed"}
 ## END: show whitelist
 
 
 ## START: show blacklist
-def showBlacklist():
+## START: show whitelist
+def showWhitelist():
     netmiko = netmiko_conn(router, username, password)
     rosapi = rosapi_conn(router, username, password)
     api = rosapi.get_api()
 
     try:
         leases = api.get_resource('ip/dhcp-server/lease')
-        dhcp = leases.get(dynamic="no")
+        dhcp = leases.get(dynamic="no", block_access="yes")
 
-        message = "🔰 Allowed Device 🔰\n\n"
+        message = "❌ Blocked Device ❌\n\n"
         if dhcp:
             for item in dhcp:
                 message += "• " + msgencode(item['host-name']) + "\n"
                 message += "MAC: " + item['mac-address'] + "\n"
-                message += "IP: " + msgencode(item['ip']) + "\n\n"
+                message += "Blocked since: " + msgencode(item['comment']) + "\n\n"
 
         else:
             message += "Empty Data"
 
+        sendMessage(message)
         logout(netmiko, rosapi)
         return {"status":True, "data": message}
             
     except:
         print(getException())
-        sendMessage("⚠️ showBlacklist Error: Action failed")
-        return {"status":False, "data": "showBlacklist: Action failed"}
+        sendMessage("⚠️ showBlocklist error: Action failed")
+        return {"status":False, "data": "showBlocklist error: Action failed"}
+## END: show whitelist
+
 ## END: show blacklist
 
 
