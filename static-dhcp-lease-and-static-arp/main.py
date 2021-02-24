@@ -344,7 +344,7 @@ def webhook():
             message = None
 
         if callback:
-            if input['callback_query']['message']['from']['id'] == int(chat_id):
+            if input['callback_query']['message']['chat']['id'] == int(chat_id):
                 message_id = input['callback_query']['message']['message_id']
                 if input['callback_query']['data']:
                     message_data = input['callback_query']['data']
