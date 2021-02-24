@@ -296,7 +296,7 @@ def block(message_data):
 
     try:
         leases = api.get_resource('ip/dhcp-server/lease')
-        dhcp = leases.get(dynamic="no", block_access="no", mac_address=input[1])
+        dhcp = leases.get(dynamic="no", mac_address=input[1])
 
         message = "❌ Device Denied ❌\n\n"
         if dhcp:
