@@ -168,8 +168,8 @@ def authorization(message_id, message_data):
             else:
                 comment = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 netmiko.send_config_set([
-                    '/interface wireless access-list add authentication=no forwarding=no mac-address=' + mac + ' comment="' + comment + '"',
-                    '/ip dhcp-server lease remove [find mac-address=' + mac + ']',
+                    '/ip dhcp-server lease make-static [find mac-address=' + mac + ']',
+                    '/ip dhcp-server lease set [find mac-address=' + mac + '] address=0.0.0.0 block-access=yes comment="' + comment + '"' ,
                 ])
                 sendMessage("❌ Device Denied ❌\nHostname: *" + msgencode(host) +
                     "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
@@ -203,7 +203,8 @@ def showWhitelist():
             for item in dhcp:
                 message += "• " + msgencode(item['host-name']) + "\n"
                 message += "MAC: " + item['mac-address'] + "\n"
-                message += "IP: " + msgencode(item['address']) + "\n\n"
+                message += "IP: " + msgencode(item['address']) + "\n"
+                message += "Allowed since: " + msgencode(item['comment']) + "\n\n"
 
         else:
             message += "Empty Data"
