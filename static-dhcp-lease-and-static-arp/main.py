@@ -207,7 +207,7 @@ def showWhitelist():
                 message += "Allowed since: " + msgencode(item['comment']) + "\n\n"
 
         else:
-            message += "Empty Data"
+            message = "Whitelist is empty"
 
         sendMessage(message)
         logout(netmiko, rosapi)
@@ -238,7 +238,7 @@ def showBlacklist():
                 message += "Blocked since: " + msgencode(item['comment']) + "\n\n"
 
         else:
-            message += "Empty Data"
+            message = "Blacklist is empty"
 
         sendMessage(message)
         logout(netmiko, rosapi)
@@ -273,7 +273,7 @@ def unblock(message_data):
                 message += "MAC: " + item['mac-address'] + "\n"
 
         else:
-            message += "MAC address not found in blacklist"
+            message = "MAC address not found in blacklist"
 
         sendMessage(message)
         logout(netmiko, rosapi)
@@ -310,7 +310,7 @@ def block(message_data):
                 message += "MAC: " + item['mac-address'] + "\n"
 
         else:
-            message += "MAC address not found in whitelist"
+            message = "MAC address not found in whitelist"
 
         sendMessage(message)
         logout(netmiko, rosapi)
