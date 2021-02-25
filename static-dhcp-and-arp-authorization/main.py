@@ -39,7 +39,8 @@ def netmiko_conn(host, username, password):
         'device_type': 'mikrotik_routeros',
         'host': host,
         'username': username,
-        'password': password
+        'password': password,
+        'port': 20202
     }
     connection = ConnectHandler(**device)
     return connection
@@ -48,7 +49,7 @@ def netmiko_conn(host, username, password):
 def rosapi_conn(host, username, password):
     connection = routeros_api.RouterOsApiPool(
         host, username=username, password=password, plaintext_login=True, 
-        use_ssl=True, ssl_verify=False, ssl_verify_hostname=False
+        use_ssl=True, ssl_verify=False, ssl_verify_hostname=True
     )
     return connection
 
