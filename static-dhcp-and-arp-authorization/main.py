@@ -171,8 +171,7 @@ def authorization(message_id, message_data):
                     '/ip dhcp-server lease make-static [find mac-address=' + mac + ']',
                     '/ip dhcp-server lease set [find mac-address=' + mac + '] address=0.0.0.0 block-access=yes comment="' + comment + '"' 
                 ])
-                sendMessage("❌ Device Denied ❌\nHostname: *" + msgencode(host) +
-                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
+                sendMessage("❌ Device Denied ❌\nHostname: *" + msgencode(host) + "*\nMAC Address: *" + mac + "*"
                 )
                 deleteMessage(message_id)
 
@@ -340,8 +339,12 @@ def showMac(message_data):
                 host = item['host-name']
                 ip = item['address']
                 mac = item['mac-address']
+                if item['blocked']:
+                    status = "❌ Blocked"
+                else:
+                    status = "✅ Allowed"
                 sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
-                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*"
+                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*" + "*\nStatus: *" + status + "*"
                 )
             logout(netmiko, rosapi)
             return {"status":True, "data":"showMac() done."}
@@ -434,7 +437,7 @@ def webhook():
                 message_data = input['message']['text']
 
                 if "/help" in message_data:
-                    response = sendMessage("ℹ️ Available Commands ℹ️\n*/help* : Show available commands\\.\n*/whitelist* : Show allowed devices\\.\n*/blacklist* : Show blocked devices\\.\n*/show _\\<mac\\>_* : Show IP based on Mac address\\.\n*/static _\\<mac\\> \\<ip\\>_* :  Change the leased IP address\\.\n*/unblock _\\<mac\\>_* : Remove device from blacklist\\.\n*/block _\\<mac\\>_* : Deny allowed device\\.\n\nNote:\n*_\\<something\\>_* is required varibale\\.")
+                    response = sendMessage("ℹ️ Available Commands ℹ️\n*/help* : Show available commands\\.\n*/whitelist* : Show allowed devices\\.\n*/blacklist* : Show blocked devices\\.\n*/show _\\<mac\\>_* : Retrive device information based on Mac address\\.\n*/static _\\<mac\\> \\<ip\\>_* :  Change the leased IP address\\.\n*/unblock _\\<mac\\>_* : Remove device from blacklist\\.\n*/block _\\<mac\\>_* : Deny allowed device\\.\n\nNote:\n*_\\<something\\>_* is required varibale\\.")
 
                 elif "/static" in message_data:
                     response = setIP(message_data)
