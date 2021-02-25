@@ -196,7 +196,7 @@ def showWhitelist():
 
     try:
         leases = api.get_resource('ip/dhcp-server/lease')
-        dhcp = leases.get(dynamic="no")
+        dhcp = leases.get(dynamic="no", blocked="no")
 
         message = "✅ Allowed Device ✅\n\n"
         if dhcp:
