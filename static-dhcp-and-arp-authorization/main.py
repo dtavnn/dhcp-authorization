@@ -39,8 +39,7 @@ def netmiko_conn(host, username, password):
         'device_type': 'mikrotik_routeros',
         'host': host,
         'username': username,
-        'password': password,
-        'port': 20202
+        'password': password
     }
     connection = ConnectHandler(**device)
     return connection
