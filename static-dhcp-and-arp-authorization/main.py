@@ -341,11 +341,11 @@ def showMac(message_data):
                 ip = item['address']
                 mac = item['mac-address']
                 if item['blocked']:
-                    status = "❌ Blocked"
+                    status = "❌ *Blocked"
                 else:
-                    status = "✅ Allowed"
+                    status = "✅ *Allowed"
                 response = sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
-                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*" + "*\nStatus: *" + status + "*"
+                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*" + "*\nStatus: " + status + "*"
                 )
             logout(netmiko, rosapi)
             print(json.dumps(response, indent=4))
