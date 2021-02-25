@@ -336,12 +336,10 @@ def showMac(message_data):
 
         if dhcp:
             for item in dhcp:
-                # get the id only
-                print(json.dumps(item, indent=4))
                 host = item['host-name']
                 ip = item['address']
                 mac = item['mac-address']
-                if item['blocked'] == False:
+                if item['blocked'] == "true":
                     status = "❌ *Blocked"
                 else:
                     status = "✅ *Allowed"
