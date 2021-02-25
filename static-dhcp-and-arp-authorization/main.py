@@ -345,10 +345,9 @@ def showMac(message_data):
                 else:
                     status = "✅ *Allowed"
                 response = sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
-                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*" + "*\nStatus: " + status + "*"
+                    "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*\nStatus: " + status + "*"
                 )
             logout(netmiko, rosapi)
-            print(json.dumps(response, indent=4))
             return response
         else:
             logout(netmiko, rosapi)
