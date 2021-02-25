@@ -228,7 +228,7 @@ def showBlacklist():
 
     try:
         leases = api.get_resource('ip/dhcp-server/lease')
-        dhcp = leases.get(dynamic="no", block_access="yes")
+        dhcp = leases.get(dynamic="no", blocked="yes")
 
         message = "❌ Blocked Device ❌\n\n"
         if dhcp:
