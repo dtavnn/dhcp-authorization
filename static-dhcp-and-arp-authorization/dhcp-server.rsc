@@ -1,8 +1,5 @@
 :do {
-  :local newtvs 0;
-  :local debug "no";
-  :local foundtv "no";
-  :local push "http://172.16.8.100:5000/push_notif"
+  :local push "https://example.com/push_notif"
 
   :foreach leasecounter in=[/ip dhcp-server lease find where dynamic] do={
     :local leasename [/ip dhcp-server lease get $leasecounter host-name];
