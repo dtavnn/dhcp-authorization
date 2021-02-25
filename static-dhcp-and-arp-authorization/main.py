@@ -340,7 +340,7 @@ def showMac(message_data):
                 host = item['host-name']
                 ip = item['address']
                 mac = item['mac-address']
-                if item['blocked']:
+                if item['blocked'] == False:
                     status = "❌ *Blocked"
                 else:
                     status = "✅ *Allowed"
