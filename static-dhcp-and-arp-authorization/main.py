@@ -7,6 +7,7 @@ import sys
 import os
 import json
 import requests
+from requests.models import Response
 import routeros_api
 import linecache
 
@@ -91,7 +92,7 @@ def logging(data):
             }
 
         file.seek(0)
-        json.dump(object, file, indent = 4)
+        json.dumps(object, file, indent = 4)
         file.truncate()
         return True
 
@@ -343,11 +344,12 @@ def showMac(message_data):
                     status = "❌ Blocked"
                 else:
                     status = "✅ Allowed"
-                sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
+                response = sendMessage("ℹ️ Device Info ℹ️\nHostname: *" + msgencode(host) +
                     "*\nIP: *" + msgencode(ip) + "*\nMAC Address: *" + mac + "*" + "*\nStatus: *" + status + "*"
                 )
             logout(netmiko, rosapi)
-            return {"status":True, "data":"showMac() done."}
+            print(json.dumps(response, indent=4))
+            return response
         else:
             logout(netmiko, rosapi)
             return {"status":False,"data":"Related DHCP lease not found."}
