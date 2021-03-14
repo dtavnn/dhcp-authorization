@@ -128,6 +128,8 @@ I recomended to select option 2.
 
 ## C. Configuration on Router
 
+Make sure you have configured ARP reply-only on the appropriate interface (interface to clients).
+
 Add the following script to IP > DHCP Server > _Select the coresponding DHCP Server_
 At tab "Script".
 ```
@@ -144,5 +146,6 @@ At tab "Script".
   };
 };
 ```
+Change "https://example.com/push_notif" to appropriate web URL.
 That script will be executed when Router leased an IP address.
 
