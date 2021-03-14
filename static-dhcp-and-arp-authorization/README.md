@@ -40,10 +40,11 @@ $ pip3 install -r requirements.txt
 ```
 export API_BOT="1555959235:AAHCGtLj5NDazIDW7qTaohqcv9SUNyVXZ5g"
 export CHAT_ID=290072888
-export ROUTER="10.0.22.2"
+export ROUTER="10.0.22.100"
 export ROUTER_USER="admin"
 export ROUTER_PASSWORD="123"
-export DHCP_INTERFACE="wlan1"
+export DHCP_INTERFACE="wifi"
+export SSH_PORT=22
 export LOG_FILE="/home/user/mikrotik-scripting/static-dhcp-and-arp-authorization/log.json"
 ```
 

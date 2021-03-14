@@ -21,6 +21,7 @@ chat_id = os.environ.get('CHAT_ID')
 router = os.environ.get('ROUTER')
 username = os.environ.get('ROUTER_USER')
 password = os.environ.get('ROUTER_PASSWORD')
+ssh_port = os.environ.get('SSH_PORT')
 
 
 ## exception
@@ -39,7 +40,8 @@ def netmiko_conn(host, username, password):
         'device_type': 'mikrotik_routeros',
         'host': host,
         'username': username,
-        'password': password
+        'password': password,
+        'port': ssh_port
     }
     connection = ConnectHandler(**device)
     return connection
@@ -47,8 +49,8 @@ def netmiko_conn(host, username, password):
 ## routerosapi connection
 def rosapi_conn(host, username, password):
     connection = routeros_api.RouterOsApiPool(
-        host, username=username, password=password, plaintext_login=True, 
-        use_ssl=True, ssl_verify=False, ssl_verify_hostname=True
+        host, username=username, password=password, 
+        plaintext_login=True, use_ssl=True, ssl_verify=False
     )
     return connection
 
