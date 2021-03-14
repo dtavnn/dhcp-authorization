@@ -3,6 +3,8 @@
 Make sure the API server can be accessed from internet using static public IP or using DMZ zone. Because the API server have to receive data from Telegram.
 Also, make sure the API server can communicate with the Router.
 
+Demo: [[Video] Static DHCP Lease Authorization using Telegram](https://youtu.be/NB3frpB1xrU).
+
 ## A. Run the API server (flask)
 
 I am using python3.8.x.
